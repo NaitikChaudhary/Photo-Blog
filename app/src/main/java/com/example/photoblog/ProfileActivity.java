@@ -6,6 +6,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
@@ -15,6 +17,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -23,6 +29,11 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView mNameUser, mBioUser;
     private CircleImageView imageUser;
     private String userId;
+
+    private RecyclerView mPostsListView;
+    private UserPostsAdapter mAdapter;
+
+    private List<Posts> mPostsList = new ArrayList<>();
 
     private DatabaseReference mRootRef;
 
@@ -40,7 +51,19 @@ public class ProfileActivity extends AppCompatActivity {
 
         mRootRef = FirebaseDatabase.getInstance().getReference();
 
+        mPostsListView = findViewById(R.id.profile_user_posts);
+
+        LinearLayoutManager mLinearLayout = new LinearLayoutManager(ProfileActivity.this);
+
+        mAdapter = new UserPostsAdapter(mPostsList);
+
+        mPostsListView.setHasFixedSize(true);
+        mPostsListView.setLayoutManager(mLinearLayout);
+        mPostsListView.setAdapter(mAdapter);
+
         setUserDetails();
+
+        loadPosts();
 
         Follow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,6 +90,32 @@ public class ProfileActivity extends AppCompatActivity {
 
                     }
                 });
+            }
+        });
+
+    }
+
+    private void loadPosts() {
+
+        final DatabaseReference posts = FirebaseDatabase.getInstance().getReference().child("Posts").child(userId);
+        posts.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mPostsList.clear();
+                for (final DataSnapshot userSnap: dataSnapshot.getChildren()) {
+
+                    Posts p = userSnap.getValue(Posts.class);
+                    mPostsList.add(p);
+
+                    Collections.sort(mPostsList);
+                    mAdapter.notifyDataSetChanged();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
 
