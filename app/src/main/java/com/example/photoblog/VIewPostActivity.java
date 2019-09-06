@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -22,7 +23,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -40,6 +43,9 @@ public class VIewPostActivity extends AppCompatActivity {
     private String userId, imageId;
 
     private DatabaseReference mRootRef;
+
+    List<Comments> mCommentsList = new ArrayList<>();
+    CommentsAdapter mAdapter = new CommentsAdapter(mCommentsList);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,9 +73,16 @@ public class VIewPostActivity extends AppCompatActivity {
         userId = getIntent().getStringExtra("user_id");
         imageId = getIntent().getStringExtra("image_id");
 
+//    -------------------initialising recyclerView------------------------
 
+        LinearLayoutManager mLinearLayout = new LinearLayoutManager(getApplicationContext());
+
+        allCommentsList.setHasFixedSize(true);
+        allCommentsList.setLayoutManager(mLinearLayout);
+        allCommentsList.setAdapter(mAdapter);
         mRootRef = FirebaseDatabase.getInstance().getReference();
 
+        loadComments();
 
         mRootRef.child("Users").child(userId).addValueEventListener(new ValueEventListener() {
             @Override
@@ -140,13 +153,14 @@ public class VIewPostActivity extends AppCompatActivity {
         commentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(commentText.getEditableText() != null) {
+                if(commentText.getText().toString().trim().length() > 0) {
                     String pushId = mRootRef.child("Posts").child(userId).child(imageId).child("comments").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).push().getKey();
                     HashMap<String, String> commentMap = new HashMap<>();
                     commentMap.put("fromUser",FirebaseAuth.getInstance().getCurrentUser().getUid());
                     commentMap.put("comment", commentText.getEditableText().toString());
                     commentMap.put("time", String.valueOf(System.currentTimeMillis()));
                     commentMap.put("commentId", pushId);
+                    commentMap.put("imageId", imageId);
                     mRootRef.child("Posts").child(userId).child(imageId).child("comments").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(pushId).setValue(commentMap);
                     commentText.setText("");
                 }
@@ -196,6 +210,28 @@ public class VIewPostActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void loadComments() {
+        mRootRef.child("Posts")
+                .child(userId).child(imageId).child("comments").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mCommentsList.clear();
+                for (final DataSnapshot commentUsersSnap: dataSnapshot.getChildren()) {
+                    for (DataSnapshot commentSnap : commentUsersSnap.getChildren()) {
+                        Comments c = commentSnap.getValue(Comments.class);
+                        mCommentsList.add(c);
+                    }
+                }
+                mAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void setNoOfLikes() {
