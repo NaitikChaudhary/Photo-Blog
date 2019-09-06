@@ -68,6 +68,13 @@ public class MyPostsAdapter extends RecyclerView.Adapter<MyPostsAdapter.MyPostsV
                                             .load(image)
                                             .into(holder.mPostImage);
                                 }
+                                if(dataSnapshot.hasChild("time")) {
+                                    String timeEpoch = dataSnapshot.child("time").getValue().toString();
+                                    GetTimeAgo getTimeAgo = new GetTimeAgo();
+                                    long lastSeen = Long.parseLong(timeEpoch);
+                                    String time = getTimeAgo.getTimeAgo(lastSeen, holder.timeAgo.getContext());
+                                    holder.timeAgo.setText(time);
+                                }
                                 if(dataSnapshot.hasChild("likes")) {
                                     if(dataSnapshot.child("likes").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                                         holder.mLikeButton.setBackgroundResource(R.drawable.heart_full);
@@ -189,7 +196,7 @@ public class MyPostsAdapter extends RecyclerView.Adapter<MyPostsAdapter.MyPostsV
         public TextView mUserName, postCaption;
         public ImageView mPostImage;
         public ImageButton mLikeButton;
-        public TextView noOfLikes;
+        public TextView noOfLikes, timeAgo;
 
         public MyPostsViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -200,6 +207,7 @@ public class MyPostsAdapter extends RecyclerView.Adapter<MyPostsAdapter.MyPostsV
             postCaption = itemView.findViewById(R.id.userPostCaption);
             mLikeButton = itemView.findViewById(R.id.likeButton);
             noOfLikes = itemView.findViewById(R.id.noOfLikes);
+            timeAgo = itemView.findViewById(R.id.timeAgo);
         }
     }
 
