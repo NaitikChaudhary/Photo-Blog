@@ -38,6 +38,7 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Post
 
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.single_post_user ,parent, false);
+        
         return new PostsViewHolder(v);
     }
 
@@ -80,6 +81,8 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Post
                                 if(dataSnapshot.hasChild("likes")) {
                                     if(dataSnapshot.child("likes").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                                         holder.mLikeButton.setBackgroundResource(R.drawable.heart_full);
+                                    } else {
+                                        holder.mLikeButton.setBackgroundResource(R.drawable.heart);
                                     }
                                 }
                                 if(dataSnapshot.hasChild("caption")) {
@@ -121,6 +124,13 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Post
             }
         });
 
+        holder.mPostImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openViewPostActivity(p.getId(), p.getImageId(), holder.mPostImage.getContext());
+            }
+        });
+
         holder.mLikeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -129,7 +139,7 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Post
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if(dataSnapshot != null) {
-
+                            setNoLikes(holder, p);
                             if(dataSnapshot.hasChild("likes")) {
                                 if(dataSnapshot.child("likes").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                                     FirebaseDatabase.getInstance().getReference().child("Posts")
@@ -166,6 +176,15 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Post
         });
 
         setNoLikes(holder, p);
+
+    }
+
+    private void openViewPostActivity(String id, String imageId, Context context) {
+
+        Intent profileIntent = new Intent(context, VIewPostActivity.class);
+        profileIntent.putExtra("user_id", id);
+        profileIntent.putExtra("image_id", imageId);
+        context.startActivity(profileIntent);
 
     }
 

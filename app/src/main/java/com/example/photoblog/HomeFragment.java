@@ -90,9 +90,6 @@ public class HomeFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-//                mPostsList.clear();
-//                mAdapter.notifyDataSetChanged();
-
                 for (final DataSnapshot userSnap: dataSnapshot.getChildren()) {
                     users.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -106,12 +103,6 @@ public class HomeFragment extends Fragment {
                                         Collections.sort(mPostsList);
                                         mAdapter.notifyDataSetChanged();
                                     }
-
-//                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//                                        if(!(mPostsList.stream().anyMatch(ti -> ti.getImageId() == p.getImageId()))) {
-//
-//                                        }
-//                                    }
                                 }
                             }
                         }

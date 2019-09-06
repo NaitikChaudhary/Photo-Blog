@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".VIewPostActivity">
+
+    <RelativeLayout
+        android:id="@+id/mainLayoutComment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/userImageComment"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="10dp"
+            android:src="@drawable/ic_account_box_black_24dp"/>
+
+        <TextView
+            android:id="@+id/userNameComment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="15dp"
+            android:textStyle="bold"
+            android:textSize="18dp"
+            android:layout_toEndOf="@+id/userImageComment"
+            android:text="name" />
+
+        <TextView
+            android:id="@+id/timeAgoComment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/userNameComment"
+            android:layout_marginStart="15dp"
+            android:layout_marginBottom="2dp"
+            android:textColor="#769EA8"
+            android:layout_toEndOf="@+id/userNameComment"
+            android:text="10 sec"
+            android:textSize="12dp" />
+
+        <TextView
+            android:id="@+id/userPostCaptionComment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/userImageComment"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_below="@+id/userNameComment"
+            android:textSize="14dp"/>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/imageCardViewComment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/userPostCaptionComment"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            app:cardCornerRadius="40dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp">
+
+            <ImageView
+                android:id="@+id/userPostImageComment"
+                android:layout_width="fill_parent"
+                android:layout_height="250dp"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"/>
+
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:id="@+id/likesLayoutComment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imageCardViewComment"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/likeButtonComment"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="30dp"
+                android:background="@drawable/heart" />
+
+            <TextView
+                android:id="@+id/noOfLikesComment"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:text="0 likes"
+                android:textColor="#CF2D58" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/commentsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imageCardViewComment"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="25dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:orientation="horizontal"
+            android:weightSum="20">
+
+            <EditText
+                android:id="@+id/commentText"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:textSize="14dp"
+                android:layout_alignParentStart="true"
+                android:hint="Write a comment..."
+                android:layout_toStartOf="@+id/commentButton"
+                android:layout_weight="19" />
+
+            <Button
+                android:id="@+id/commentButton"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_below="@+id/likesLayoutComment"
+                android:layout_alignParentEnd="true"
+                android:layout_weight="1"
+                android:text="Comment"
+                android:textSize="10dp"/>
+
+        </LinearLayout>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/allCommentsListView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/commentsLayout"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="10dp"></androidx.recyclerview.widget.RecyclerView>
+
+    </RelativeLayout>
+
+</ScrollView>
